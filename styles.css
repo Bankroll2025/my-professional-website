@@ -558,6 +558,62 @@ footer {
     background: rgba(255, 0, 0, 0.3);
 }
 
+/* Social Media Styles */
+.social {
+    padding: 4rem 2rem;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.social h2 {
+    color: #ffffff;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.social-btn i {
+    margin-right: 10px;
+    font-size: 1.5rem;
+}
+
+.social-btn.instagram {
+    background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+}
+
+.social-btn.instagram:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(225, 48, 108, 0.4);
+}
+
+.social-btn.snapchat {
+    background: #FFFC00;
+    color: #000000;
+}
+
+.social-btn.snapchat:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 252, 0, 0.4);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .navbar {
