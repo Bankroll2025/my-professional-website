@@ -65,26 +65,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
-                const data = {
-                    clientFirstName: formData.get('client_first_name'),
-                    clientLastName: formData.get('client_last_name'),
-                    clientEmail: formData.get('client_email'),
-                    clientPhone: formData.get('client_phone'),
-                    clientGender: formData.get('client_gender'),
-                    clientBirthdate: formData.get('client_birthdate'),
-                    clientAge: age,
-                    preferredDate: formData.get('preferred_date'),
-                    preferredTime: formData.get('preferred_time'),
-                    tattooType: formData.get('tattooType'),
-                    tattooSize: formData.get('tattooSize'),
-                    tattooPlacement: formData.get('tattooPlacement'),
-                    tattooDescription: formData.get('tattooDescription'),
-                    colorPreference: formData.get('colorPreference') || 'Not specified',
-                    additionalNotes: formData.get('additionalNotes') || 'None',
-                    bookingId: generateBookingId()
-                };
-
-                const formattedDate = new Date(data.preferredDate).toLocaleDateString('en-US', {
+                const bookingId = generateBookingId();
+                const formattedDate = new Date(formData.get('preferred_date')).toLocaleDateString('en-US', {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
@@ -98,38 +80,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         "service_2e752is",
                         "template_tukgt7p",
                         {
-                            to_email: "senghakmad@gmail.com",
-                            from_name: `${data.clientFirstName} ${data.clientLastName}`,
-                            message: `
-                                New Tattoo Appointment Request at Inked by Chris
-                                
-                                Client Details:
-                                Name: ${data.clientFirstName} ${data.clientLastName}
-                                Email: ${data.clientEmail}
-                                Phone: ${data.clientPhone}
-                                Gender: ${data.clientGender}
-                                Age: ${data.clientAge}
-                                
-                                Appointment Details:
-                                Date: ${formattedDate}
-                                Time: ${data.preferredTime}
-                                
-                                Tattoo Details:
-                                Type: ${data.tattooType}
-                                Size: ${data.tattooSize}
-                                Placement: ${data.tattooPlacement}
-                                Description: ${data.tattooDescription || 'Not provided'}
-                                Color Preference: ${data.colorPreference}
-                                
-                                Additional Notes: ${data.additionalNotes || 'None'}
-                                
-                                Booking ID: ${data.bookingId}
-                                
-                                Studio Location:
-                                2395 7th St N
-                                Saint Paul, MN 55109
-                            `,
-                            subject: `New Tattoo Appointment Request - ${formattedDate} at ${data.preferredTime}`
+                            to_name: "Chris",
+                            from_name: `${formData.get('client_first_name')} ${formData.get('client_last_name')}`,
+                            client_email: formData.get('client_email'),
+                            client_phone: formData.get('client_phone'),
+                            appointment_date: formattedDate,
+                            appointment_time: formData.get('preferred_time'),
+                            tattoo_type: formData.get('tattooType'),
+                            tattoo_size: formData.get('tattooSize'),
+                            tattoo_placement: formData.get('tattooPlacement'),
+                            tattoo_description: formData.get('tattooDescription') || 'Not provided',
+                            color_preference: formData.get('colorPreference') || 'Not specified',
+                            additional_notes: formData.get('additionalNotes') || 'None',
+                            booking_id: bookingId
                         }
                     );
                     console.log('Shop notification sent successfully');
@@ -140,46 +103,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         "service_2e752is",
                         "template_gowinjb",
                         {
-                            to_email: data.clientEmail,
-                            from_name: "Inked by Chris",
-                            message: `
-                                Thank you for booking your tattoo appointment with Inked by Chris!
-                                
-                                Appointment Details:
-                                Date: ${formattedDate}
-                                Time: ${data.preferredTime}
-                                
-                                Your Details:
-                                Name: ${data.clientFirstName} ${data.clientLastName}
-                                
-                                Tattoo Details:
-                                Type: ${data.tattooType}
-                                Size: ${data.tattooSize}
-                                Placement: ${data.tattooPlacement}
-                                
-                                Your booking ID is: ${data.bookingId}
-                                
-                                Studio Location:
-                                2395 7th St N
-                                Saint Paul, MN 55109
-                                
-                                Important Information:
-                                - Please arrive 15 minutes before your appointment time
-                                - Bring a valid ID showing you are 18 or older
-                                - A deposit may be required for certain tattoo sizes
-                                
-                                Need to reschedule or cancel?
-                                Contact us at:
-                                Phone: (651) 592-5122
-                                Email: senghakmad@gmail.com
-                                
-                                Follow us on social media:
-                                Instagram: @inked_bychris
-                                Snapchat: @sasuke_2k
-                                
-                                We look forward to creating your custom tattoo!
-                            `,
-                            subject: `Your Tattoo Appointment Confirmation - Inked by Chris`
+                            to_name: formData.get('client_first_name'),
+                            client_email: formData.get('client_email'),
+                            appointment_date: formattedDate,
+                            appointment_time: formData.get('preferred_time'),
+                            tattoo_type: formData.get('tattooType'),
+                            tattoo_size: formData.get('tattooSize'),
+                            tattoo_placement: formData.get('tattooPlacement'),
+                            booking_id: bookingId,
+                            studio_address: "2395 7th St N, Saint Paul, MN 55109",
+                            studio_phone: "(651) 592-5122",
+                            studio_email: "senghakmad@gmail.com"
                         }
                     );
                     console.log('Client confirmation sent successfully');
@@ -189,16 +123,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     successDiv.className = 'success-message';
                     successDiv.innerHTML = `
                         <h3>Booking Successful!</h3>
-                        <p>Your appointment has been scheduled for ${formattedDate} at ${data.preferredTime}.</p>
-                        <p>A confirmation email has been sent to ${data.clientEmail}.</p>
-                        <p>Your booking ID is: ${data.bookingId}</p>
+                        <p>Your appointment has been scheduled for ${formattedDate} at ${formData.get('preferred_time')}.</p>
+                        <p>A confirmation email has been sent to ${formData.get('client_email')}.</p>
+                        <p>Your booking ID is: ${bookingId}</p>
                         <div class="booking-details">
-                            <p><strong>Name:</strong> ${data.clientFirstName} ${data.clientLastName}</p>
+                            <p><strong>Name:</strong> ${formData.get('client_first_name')} ${formData.get('client_last_name')}</p>
                             <p><strong>Date:</strong> ${formattedDate}</p>
-                            <p><strong>Time:</strong> ${data.preferredTime}</p>
-                            <p><strong>Tattoo Type:</strong> ${data.tattooType}</p>
-                            <p><strong>Size:</strong> ${data.tattooSize}</p>
-                            <p><strong>Placement:</strong> ${data.tattooPlacement}</p>
+                            <p><strong>Time:</strong> ${formData.get('preferred_time')}</p>
+                            <p><strong>Tattoo Type:</strong> ${formData.get('tattooType')}</p>
+                            <p><strong>Size:</strong> ${formData.get('tattooSize')}</p>
+                            <p><strong>Placement:</strong> ${formData.get('tattooPlacement')}</p>
                         </div>
                         <p class="studio-info">
                             <strong>Studio Location:</strong><br>
@@ -217,9 +151,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         <h3>Email Notification Error</h3>
                         <p>There was an error sending the confirmation email. Please save your booking information:</p>
                         <div class="booking-details">
-                            <p><strong>Booking ID:</strong> ${data.bookingId}</p>
+                            <p><strong>Booking ID:</strong> ${bookingId}</p>
                             <p><strong>Date:</strong> ${formattedDate}</p>
-                            <p><strong>Time:</strong> ${data.preferredTime}</p>
+                            <p><strong>Time:</strong> ${formData.get('preferred_time')}</p>
                         </div>
                         <p>Contact us to confirm your appointment:</p>
                         <p><strong>Email:</strong> senghakmad@gmail.com</p>
