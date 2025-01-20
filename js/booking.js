@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             to_email: "senghakmad@gmail.com",
                             from_name: `${data.clientFirstName} ${data.clientLastName}`,
                             message: `
-                                New Tattoo Appointment Request
+                                New Tattoo Appointment Request at Inked by Chris
                                 
                                 Client Details:
                                 Name: ${data.clientFirstName} ${data.clientLastName}
@@ -124,8 +124,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                 Additional Notes: ${data.additionalNotes || 'None'}
                                 
                                 Booking ID: ${data.bookingId}
+                                
+                                Studio Location:
+                                2395 7th St N
+                                Saint Paul, MN 55109
                             `,
-                            subject: `New Tattoo Appointment: ${formattedDate} at ${data.preferredTime}`
+                            subject: `New Tattoo Appointment Request - ${formattedDate} at ${data.preferredTime}`
                         }
                     );
                     console.log('Shop notification sent successfully');
@@ -139,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             to_email: data.clientEmail,
                             from_name: "Inked by Chris",
                             message: `
-                                Thank you for booking your tattoo appointment!
+                                Thank you for booking your tattoo appointment with Inked by Chris!
                                 
                                 Appointment Details:
                                 Date: ${formattedDate}
@@ -155,12 +159,27 @@ document.addEventListener('DOMContentLoaded', function() {
                                 
                                 Your booking ID is: ${data.bookingId}
                                 
-                                Please arrive 15 minutes before your appointment time.
-                                If you need to reschedule or cancel, please contact us at:
-                                Email: senghakmad@gmail.com
+                                Studio Location:
+                                2395 7th St N
+                                Saint Paul, MN 55109
+                                
+                                Important Information:
+                                - Please arrive 15 minutes before your appointment time
+                                - Bring a valid ID showing you are 18 or older
+                                - A deposit may be required for certain tattoo sizes
+                                
+                                Need to reschedule or cancel?
+                                Contact us at:
                                 Phone: (651) 592-5122
+                                Email: senghakmad@gmail.com
+                                
+                                Follow us on social media:
+                                Instagram: @inked_bychris
+                                Snapchat: @sasuke_2k
+                                
+                                We look forward to creating your custom tattoo!
                             `,
-                            subject: `Your Tattoo Appointment Confirmation - ${formattedDate}`
+                            subject: `Your Tattoo Appointment Confirmation - Inked by Chris`
                         }
                     );
                     console.log('Client confirmation sent successfully');
@@ -181,6 +200,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             <p><strong>Size:</strong> ${data.tattooSize}</p>
                             <p><strong>Placement:</strong> ${data.tattooPlacement}</p>
                         </div>
+                        <p class="studio-info">
+                            <strong>Studio Location:</strong><br>
+                            2395 7th St N<br>
+                            Saint Paul, MN 55109
+                        </p>
                         <button onclick="location.reload()" class="refresh-button">Book Another Appointment</button>
                     `;
                     bookingForm.replaceWith(successDiv);
@@ -212,6 +236,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 errorDiv.innerHTML = `
                     <h3>Booking Error</h3>
                     <p>There was an error processing your booking. Please try again or contact us directly.</p>
+                    <p><strong>Phone:</strong> (651) 592-5122</p>
+                    <p><strong>Email:</strong> senghakmad@gmail.com</p>
                     <button onclick="location.reload()" class="refresh-button">Try Again</button>
                 `;
                 bookingForm.replaceWith(errorDiv);
@@ -226,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function generateBookingId() {
         const timestamp = Date.now().toString(36);
         const randomStr = Math.random().toString(36).substring(2, 8);
-        return `BK-${timestamp}-${randomStr}`.toUpperCase();
+        return `IC-${timestamp}-${randomStr}`.toUpperCase();
     }
 });
 
