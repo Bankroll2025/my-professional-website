@@ -614,6 +614,143 @@ footer {
     box-shadow: 0 5px 15px rgba(255, 252, 0, 0.4);
 }
 
+/* Booking Form Styles */
+.booking {
+    padding: 80px 5%;
+    background-color: #f9f9f9;
+}
+
+.booking h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+}
+
+#bookingForm {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+#bookingForm button[type="submit"] {
+    width: 100%;
+    padding: 1rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#bookingForm button[type="submit"]:hover {
+    background: #0056b3;
+}
+
+#bookingForm button[type="submit"]:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+/* Success and Error Messages */
+.success-message,
+.error-message {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.success-message {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.error-message {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.success-message h3,
+.error-message h3 {
+    margin-bottom: 1rem;
+}
+
+.booking-details {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: rgba(255,255,255,0.8);
+    border-radius: 5px;
+}
+
+.refresh-button {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    margin-top: 1rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.refresh-button:hover {
+    background: #0056b3;
+}
+
+/* Flatpickr Custom Styles */
+.flatpickr-calendar {
+    background: #fff;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    border-radius: 10px;
+}
+
+.flatpickr-day.selected {
+    background: #007bff;
+    border-color: #007bff;
+}
+
+.flatpickr-day:hover {
+    background: #e6f2ff;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .navbar {
@@ -646,5 +783,19 @@ footer {
     
     .quick-links {
         grid-template-columns: 1fr;
+    }
+
+    #bookingForm {
+        padding: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 0.6rem;
     }
 }
