@@ -1,4 +1,5 @@
 // Initialize EmailJS with your public key
+// Updated template parameters for better email delivery
 (function() {
     emailjs.init("nqLDVniO3BUlQ-e1n");
 })();
@@ -86,6 +87,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         "service_2e752is",
                         "template_tukgt7p",
                         {
+                            to_name: "Chris",
+                            from_name: `${formData.firstName} ${formData.lastName}`,
                             booking_id: bookingId,
                             client_name: `${formData.firstName} ${formData.lastName}`,
                             client_email: formData.email,
@@ -111,6 +114,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         "service_2e752is",
                         "template_gowinjb",
                         {
+                            to_name: formData.firstName,
+                            from_name: "Inked by Chris",
                             booking_id: bookingId,
                             client_name: `${formData.firstName} ${formData.lastName}`,
                             client_email: formData.email,
