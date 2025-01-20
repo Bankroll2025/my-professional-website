@@ -6,8 +6,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     const bookingForm = document.getElementById('bookingForm');
     
-    // Initialize flatpickr
-    const datePicker = flatpickr("#preferred_date", {
+    // Initialize flatpickr for appointment date
+    const datePicker = flatpickr("#appointment_date", {
         minDate: "today",
         disable: [
             function(date) {
@@ -20,31 +20,45 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Initialize time picker
-    const timePicker = flatpickr("#preferred_time", {
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "h:i K",
-        minTime: "10:00",
-        maxTime: "18:00",
-        defaultDate: "10:00",
-        minuteIncrement: 30
-    });
-
     if (bookingForm) {
         bookingForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const submitButton = bookingForm.querySelector('button[type="submit"]');
-            submitButton.textContent = 'Processing...';
-            submitButton.disabled = true;
+            if (submitButton) {
+                submitButton.textContent = 'Processing...';
+                submitButton.disabled = true;
+            }
 
             try {
                 // Get form data
-                const formData = new FormData(bookingForm);
+                const formData = {
+                    firstName: document.getElementById('client_first_name').value.trim(),
+                    lastName: document.getElementById('client_last_name').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    phone: document.getElementById('phone').value.trim(),
+                    gender: document.getElementById('client_gender').value,
+                    birthdate: document.getElementById('birthdate').value,
+                    preferredDate: document.getElementById('appointment_date').value,
+                    preferredTime: document.getElementById('appointment_time').value,
+                    tattooType: document.getElementById('tattooType').value,
+                    tattooSize: document.getElementById('tattooSize').value,
+                    tattooPlacement: document.getElementById('tattooPlacement').value,
+                    tattooDescription: document.getElementById('tattooDescription')?.value?.trim() || '',
+                    colorPreference: document.getElementById('colorPreference')?.value || 'Not specified',
+                    additionalNotes: document.getElementById('additionalNotes')?.value?.trim() || ''
+                };
+
+                // Validate required fields
+                const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'gender', 'birthdate', 'preferredDate', 'preferredTime'];
+                const missingFields = requiredFields.filter(field => !formData[field]);
+                
+                if (missingFields.length > 0) {
+                    throw new Error(`Please fill in all required fields: ${missingFields.join(', ')}`);
+                }
                 
                 // Calculate age
-                const birthDate = new Date(formData.get('client_birthdate'));
+                const birthDate = new Date(formData.birthdate);
                 const today = new Date();
                 let age = today.getFullYear() - birthDate.getFullYear();
                 const m = today.getMonth() - birthDate.getMonth();
@@ -54,19 +68,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Check if client is 18 or older
                 if (age < 18) {
-                    const errorDiv = document.createElement('div');
-                    errorDiv.className = 'error-message';
-                    errorDiv.innerHTML = `
-                        <h3>Age Restriction</h3>
-                        <p>You must be 18 or older to book a tattoo appointment.</p>
-                        <button onclick="location.reload()" class="refresh-button">Try Again</button>
-                    `;
-                    bookingForm.replaceWith(errorDiv);
-                    return;
+                    throw new Error('You must be 18 or older to book a tattoo appointment.');
                 }
 
                 const bookingId = generateBookingId();
-                const formattedDate = new Date(formData.get('preferred_date')).toLocaleDateString('en-US', {
+                const formattedDate = new Date(formData.preferredDate).toLocaleDateString('en-US', {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
@@ -81,17 +87,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         "template_tukgt7p",
                         {
                             to_name: "Chris",
-                            from_name: `${formData.get('client_first_name')} ${formData.get('client_last_name')}`,
-                            client_email: formData.get('client_email'),
-                            client_phone: formData.get('client_phone'),
+                            from_name: `${formData.firstName} ${formData.lastName}`,
+                            client_email: formData.email,
+                            client_phone: formData.phone,
+                            client_gender: formData.gender,
+                            client_age: age,
                             appointment_date: formattedDate,
-                            appointment_time: formData.get('preferred_time'),
-                            tattoo_type: formData.get('tattooType'),
-                            tattoo_size: formData.get('tattooSize'),
-                            tattoo_placement: formData.get('tattooPlacement'),
-                            tattoo_description: formData.get('tattooDescription') || 'Not provided',
-                            color_preference: formData.get('colorPreference') || 'Not specified',
-                            additional_notes: formData.get('additionalNotes') || 'None',
+                            appointment_time: formData.preferredTime,
+                            tattoo_type: formData.tattooType,
+                            tattoo_size: formData.tattooSize,
+                            tattoo_placement: formData.tattooPlacement,
+                            tattoo_description: formData.tattooDescription || 'Not provided',
+                            color_preference: formData.colorPreference || 'Not specified',
+                            additional_notes: formData.additionalNotes || 'None',
                             booking_id: bookingId
                         }
                     );
@@ -103,13 +111,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         "service_2e752is",
                         "template_gowinjb",
                         {
-                            to_name: formData.get('client_first_name'),
-                            client_email: formData.get('client_email'),
+                            to_name: formData.firstName,
+                            client_email: formData.email,
                             appointment_date: formattedDate,
-                            appointment_time: formData.get('preferred_time'),
-                            tattoo_type: formData.get('tattooType'),
-                            tattoo_size: formData.get('tattooSize'),
-                            tattoo_placement: formData.get('tattooPlacement'),
+                            appointment_time: formData.preferredTime,
+                            tattoo_type: formData.tattooType,
+                            tattoo_size: formData.tattooSize,
+                            tattoo_placement: formData.tattooPlacement,
                             booking_id: bookingId,
                             studio_address: "2395 7th St N, Saint Paul, MN 55109",
                             studio_phone: "(651) 592-5122",
@@ -123,16 +131,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     successDiv.className = 'success-message';
                     successDiv.innerHTML = `
                         <h3>Booking Successful!</h3>
-                        <p>Your appointment has been scheduled for ${formattedDate} at ${formData.get('preferred_time')}.</p>
-                        <p>A confirmation email has been sent to ${formData.get('client_email')}.</p>
+                        <p>Your appointment has been scheduled for ${formattedDate} at ${formData.preferredTime}.</p>
+                        <p>A confirmation email has been sent to ${formData.email}.</p>
                         <p>Your booking ID is: ${bookingId}</p>
                         <div class="booking-details">
-                            <p><strong>Name:</strong> ${formData.get('client_first_name')} ${formData.get('client_last_name')}</p>
+                            <p><strong>Name:</strong> ${formData.firstName} ${formData.lastName}</p>
                             <p><strong>Date:</strong> ${formattedDate}</p>
-                            <p><strong>Time:</strong> ${formData.get('preferred_time')}</p>
-                            <p><strong>Tattoo Type:</strong> ${formData.get('tattooType')}</p>
-                            <p><strong>Size:</strong> ${formData.get('tattooSize')}</p>
-                            <p><strong>Placement:</strong> ${formData.get('tattooPlacement')}</p>
+                            <p><strong>Time:</strong> ${formData.preferredTime}</p>
+                            <p><strong>Tattoo Type:</strong> ${formData.tattooType}</p>
+                            <p><strong>Size:</strong> ${formData.tattooSize}</p>
+                            <p><strong>Placement:</strong> ${formData.tattooPlacement}</p>
                         </div>
                         <p class="studio-info">
                             <strong>Studio Location:</strong><br>
@@ -153,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="booking-details">
                             <p><strong>Booking ID:</strong> ${bookingId}</p>
                             <p><strong>Date:</strong> ${formattedDate}</p>
-                            <p><strong>Time:</strong> ${formData.get('preferred_time')}</p>
+                            <p><strong>Time:</strong> ${formData.preferredTime}</p>
                         </div>
                         <p>Contact us to confirm your appointment:</p>
                         <p><strong>Email:</strong> senghakmad@gmail.com</p>
@@ -169,15 +177,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 errorDiv.className = 'error-message';
                 errorDiv.innerHTML = `
                     <h3>Booking Error</h3>
-                    <p>There was an error processing your booking. Please try again or contact us directly.</p>
+                    <p>${error.message || 'There was an error processing your booking. Please try again or contact us directly.'}</p>
                     <p><strong>Phone:</strong> (651) 592-5122</p>
                     <p><strong>Email:</strong> senghakmad@gmail.com</p>
                     <button onclick="location.reload()" class="refresh-button">Try Again</button>
                 `;
                 bookingForm.replaceWith(errorDiv);
             } finally {
-                submitButton.textContent = 'Book Appointment';
-                submitButton.disabled = false;
+                const submitButton = bookingForm.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.textContent = 'Book Appointment';
+                    submitButton.disabled = false;
+                }
             }
         });
     }
@@ -194,15 +205,40 @@ document.addEventListener('DOMContentLoaded', function() {
 const urlParams = new URLSearchParams(window.location.search);
 const rescheduleId = urlParams.get('reschedule');
 const cancelId = urlParams.get('cancel');
-
+    
 if (rescheduleId) {
-    // Handle reschedule logic
-    console.log('Reschedule booking:', rescheduleId);
-    // Add your reschedule handling code here
+    // Handle reschedule
+    const bookingSection = document.getElementById('booking');
+    if (bookingSection) {
+        bookingSection.scrollIntoView({ behavior: 'smooth' });
+        const message = document.createElement('div');
+        message.className = 'info-message';
+        message.innerHTML = `
+            <p>You're rescheduling appointment: ${rescheduleId}</p>
+            <p>Please select your new preferred date and time below.</p>
+        `;
+        const bookingForm = document.getElementById('bookingForm');
+        if (bookingForm) {
+            bookingForm.insertBefore(message, bookingForm.firstChild);
+        }
+    }
+} else if (cancelId) {
+    // Handle cancellation
+    window.location.href = `/cancel.html?id=${cancelId}`;
 }
 
-if (cancelId) {
-    // Handle cancellation logic
-    console.log('Cancel booking:', cancelId);
-    // Add your cancellation handling code here
+// Populate time slots
+const timeSlotSelect = document.getElementById('timeSlot');
+if (timeSlotSelect) {
+    const timeSlots = [
+        "10:00 AM", "11:00 AM", "12:00 PM",
+        "1:00 PM", "2:00 PM", "3:00 PM",
+        "4:00 PM", "5:00 PM", "6:00 PM"
+    ];
+    timeSlots.forEach(slot => {
+        const option = document.createElement('option');
+        option.value = slot;
+        option.textContent = slot;
+        timeSlotSelect.appendChild(option);
+    });
 }
